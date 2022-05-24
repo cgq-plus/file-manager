@@ -104,7 +104,7 @@ func Delete(ctx *gin.Context) {
 	}
 	if req.IsDir {
 		fmt.Printf("删除目录:%s\n", filepath)
-		err := os.RemoveAll(realPath)
+		err := os.RemoveAll(filepath)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
 				"err": err.Error(),
@@ -113,7 +113,7 @@ func Delete(ctx *gin.Context) {
 		}
 	} else {
 		fmt.Printf("删除文件:%s\n", filepath)
-		err := os.Remove(realPath)
+		err := os.Remove(filepath)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
 				"err": err.Error(),
