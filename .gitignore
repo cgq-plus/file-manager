@@ -2,3 +2,5 @@
 tmp/
 logs/
 test
+.DS_Store
+dist
