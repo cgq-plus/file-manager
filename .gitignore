@@ -4,3 +4,4 @@ logs/
 test
 .DS_Store
 dist
+out/
