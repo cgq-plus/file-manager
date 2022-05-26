@@ -5,6 +5,7 @@ import (
 	"file-manager/global"
 	"file-manager/initialize"
 	"fmt"
+	"go.uber.org/zap"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,6 +15,8 @@ import (
 
 func main() {
 	initialize.InitConfig("./conf/config.yaml") // 初始化Viper
+	global.LOG = initialize.Zap()               // 初始化zap日志库
+	zap.ReplaceGlobals(global.LOG)
 	router := initialize.InitRouter()
 	s := &http.Server{
 		Addr:           fmt.Sprintf(":%d", global.CONFIG.Application.Port),

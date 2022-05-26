@@ -1,4 +1,15 @@
 app:
   port: 8080
   run_mode: debug
+  logicDelete: true
   rootPath: /Users/chenguoqiang/Documents/Development/CGQ/GoLand/file-manager/test
+  backUpPath: /Users/chenguoqiang/Documents/Development/CGQ/GoLand/file-manager/backup
+zap:
+  level: 'info'
+  format: 'console'
+  prefix: 'sirix'
+  path: 'logs'
+  showLine: true
+  encodeLevel: 'LowercaseColorLevelEncoder'
+  stacktraceKey: 'stacktrace'
+  logInConsole: true

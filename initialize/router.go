@@ -10,6 +10,7 @@ import (
 func InitRouter() *gin.Engine {
 	gin.SetMode(global.CONFIG.Application.RunMode)
 	engine := gin.New()
+	engine.Use(GinLogger(global.LOG), GinRecovery(global.LOG, true)) // 使用zap代替gin默认的Loger
 	// 跨域，如需跨域可以打开下面的注释
 	engine.Use(middleware.Cors()) // 直接放行全部跨域请求
 	// 健康监测

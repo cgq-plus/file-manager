@@ -8,7 +8,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path"
 	"strings"
+	"time"
 )
 
 // List 读取文件列表
@@ -98,23 +100,42 @@ func Delete(ctx *gin.Context) {
 	}
 	// 本地真实目录
 	realPath := fmt.Sprintf("%s%s", global.CONFIG.Application.RootPath, req.Path)
+	// 备份真实目录
+	backupPath := fmt.Sprintf("%s%s", global.CONFIG.Application.BackUpPath, req.Path)
 	filepath := fmt.Sprintf("%s/%s", realPath, req.Name)
 	if req.Path == "/" {
 		filepath = fmt.Sprintf("%s%s", realPath, req.Name)
 	}
+	//获取文件名称带后缀
+	fileNameWithSuffix := path.Base(filepath)
+	//获取文件的后缀(文件类型)
+	fileType := path.Ext(fileNameWithSuffix)
+	//获取文件名称(不带后缀)
+	fileNameOnly := strings.TrimSuffix(fileNameWithSuffix, fileType)
+	backUpFilePath := fmt.Sprintf("%s%s", backupPath, fmt.Sprintf("%s_%s%s", fileNameOnly, time.Now().Format("2006_01_02_150405"), fileType))
 	if req.IsDir {
-		fmt.Printf("删除目录:%s\n", filepath)
-		err := os.RemoveAll(filepath)
+		global.LOG.Sugar().Infof("删除目录:%s \n", filepath)
+		if global.CONFIG.Application.LogicDelete {
+			err = os.Rename(filepath, backUpFilePath)
+		} else {
+			err = os.RemoveAll(filepath)
+		}
 		if err != nil {
+			global.LOG.Sugar().Infof("删除目录异常.%s \n", err.Error())
 			ctx.JSON(http.StatusInternalServerError, gin.H{
 				"err": err.Error(),
 			})
 			return
 		}
 	} else {
-		fmt.Printf("删除文件:%s\n", filepath)
-		err := os.Remove(filepath)
+		global.LOG.Sugar().Infof("删除文件:%s \n", filepath)
+		if global.CONFIG.Application.LogicDelete {
+			err = os.Rename(filepath, backUpFilePath)
+		} else {
+			err = os.Remove(filepath)
+		}
 		if err != nil {
+			global.LOG.Sugar().Infof("删除目录异常.%s \n", err.Error())
 			ctx.JSON(http.StatusInternalServerError, gin.H{
 				"err": err.Error(),
 			})
